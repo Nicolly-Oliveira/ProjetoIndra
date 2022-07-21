@@ -1,0 +1,76 @@
+/// <reference types="cypress" />
+
+describe('Página de Login', () => {
+
+    beforeEach('Visitar site, fazer login e validação do login', () => {
+        cy.visit('https://opensource-demo.orangehrmlive.com/')
+        cy.xpath('//div[@id="footer"]').should('contain', 'OrangeHRM 4.10.1').and('be.visible')   
+    })
+
+    it('Fazer login com usuário válido', () => {
+        cy.xpath('//input[@id="txtUsername"]')
+            .should('be.visible')
+            .type('Admin')
+            .should('have.value', 'Admin')
+        cy.xpath('//input[@id="txtPassword"]')
+            .should('be.visible')
+            .type('admin123')
+            .should('have.value', 'admin123')
+        cy.xpath('//input[@id="btnLogin"]')
+            .should('be.visible')
+            .click()
+        cy.xpath('//a[@id="welcome"]')
+            .should('be.visible')
+            .and('contain', 'Welcome')
+    })
+
+    it('Fazer login com usuário inválido', () => {
+        cy.xpath('//input[@id="txtUsername"]')
+            .should('be.visible')
+            .type('UsuarioInvalido')
+            .should('have.value', 'UsuarioInvalido')
+        cy.xpath('//input[@id="txtPassword"]')
+            .should('be.visible')
+            .type('SenhaInvalida')
+            .should('have.value', 'SenhaInvalida')
+        cy.xpath('//input[@id="btnLogin"]')
+            .should('be.visible')
+            .click() 
+        cy.xpath('//span[@id="spanMessage"]')
+            .should('be.visible')
+            .and('have.text', 'Invalid credentials')  
+    })
+
+    it('Fazer login com campos vazios', () => {
+        cy.xpath('//input[@id="txtUsername"]')
+            .should('be.visible')
+            .and('be.empty')
+        cy.xpath('//input[@id="txtPassword"]')
+            .should('be.visible')
+            .and('be.empty')
+        cy.xpath('//input[@id="btnLogin"]')
+            .should('be.visible')
+            .click()
+        cy.xpath('//span[@id="spanMessage"]')
+            .should('be.visible')
+            .and('have.text', 'Username cannot be empty')
+    })
+
+    it('Fazer login com usuário válido e senha incorreta', () => {
+        cy.xpath('//input[@id="txtUsername"]')
+            .should('be.visible')
+            .type('Admin')
+            .should('have.value', 'Admin')
+        cy.xpath('//input[@id="txtPassword"]')
+            .should('be.visible')
+            .type('admin000')
+            .should('have.value', 'admin000')
+        cy.xpath('//input[@id="btnLogin"]')
+            .should('be.visible')
+            .click()
+        cy.xpath('//span[@id="spanMessage"]')
+            .should('be.visible')
+            .and('have.text', 'Invalid credentials')
+    })
+
+})
